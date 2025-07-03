@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estatísticas do Campeonato Brasileiro (2003-2024)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #1a237e;
+            text-align: center;
+            border-bottom: 2px solid #3949ab;
+            padding-bottom: 10px;
+        }
+        .filters {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #e8eaf6;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #3d3d3d;
+        }
+        select, button {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #c5cae9;
+            font-size: 16px;
+            min-width: 200px;
+        }
+        button {
+            background-color: #3949ab;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+            align-self: flex-end;
+        }
+        button:hover {
+            background-color: #303f9f;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #3949ab;
+            color: white;
+            font-weight: bold;
+        }
+        tbody tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+        tbody tr:hover {
+            background-color: #e0e0e0;
+        }
+        #stats-table th:first-child, #stats-table td:first-child {
+            text-align: left;
+            width: 25%;
+        }
+        #games-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .game {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .game:last-child {
+            border-bottom: none;
+        }
+        .game-teams {
+            flex: 1;
+            text-align: center;
+        }
+        .game-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .loader {
+            text-align: center;
+            font-size: 1.2em;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Estatísticas do Campeonato Brasileiro (2003-2024)</h1>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label for="season-select">Selecione a Temporada:</label>
+                <select id="season-select">
+                    <option value="all">Todas as Temporadas</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="team-select">Selecione o Time:</label>
+                <select id="team-select">
+                    <option value="all">Todos os Times</option>
+                </select>
+            </div>
+            <button id="query-button">Consultar</button>
+        </div>
+
+        <div id="results">
+            </div>
+
+    </div>
+
+    <script>
+        const CSV_FILE_PATH = 'Campeonatos Brasileiros 03 a 24.csv';
+
+        let allGamesData = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            document.getElementById('query-button').addEventListener('click', runQuery);
+        });
+
+        async function loadData() {
+            try {
+                const response = await fetch(CSV_FILE_PATH);
+                if (!response.ok) {
+                    throw new Error(`Erro ao carregar o arquivo: ${response.statusText}`);
+                }
+                const text = await response.text();
+                allGamesData = parseCSV(text);
+
+                populateFilters();
+                runQuery(); // Run initial query to show all data
+            } catch (error) {
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = `<p style="color: red; text-align: center;"><b>Erro:</b> ${error.message}.<br>Verifique se o arquivo CSV está na mesma pasta que este HTML e se o nome está correto.</p>`;
+                console.error("Falha ao carregar ou processar o CSV:", error);
+            }
+        }
+
+        function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim() === '') continue;
+                const values = lines[i].split(',');
+                const entry = {};
+                for (let j = 0; j < headers.length; j++) {
+                    entry[headers[j]] = values[j] ? values[j].trim() : '';
+                }
+                data.push(entry);
+            }
+            return data;
+        }
+
+        function populateFilters() {
+            const seasons = [...new Set(allGamesData.map(game => game.Temporada))].sort((a,b) => b-a);
+            const teamsHome = allGamesData.map(game => game.Mandante);
+            const teamsAway = allGamesData.map(game => game.Visitante);
+            const teams = [...new Set([...teamsHome, ...teamsAway])].sort();
+
+            const seasonSelect = document.getElementById('season-select');
+            seasons.forEach(season => {
+                const option = new Option(season, season);
+                seasonSelect.add(option);
+            });
+
+            const teamSelect = document.getElementById('team-select');
+            teams.forEach(team => {
+                const option = new Option(team, team);
+                teamSelect.add(option);
+            });
+        }
+
+        function runQuery() {
+            const selectedSeason = document.getElementById('season-select').value;
+            const selectedTeam = document.getElementById('team-select').value;
+
+            const filteredGames = allGamesData.filter(game => {
+                const seasonMatch = (selectedSeason === 'all' || game.Temporada === selectedSeason);
+                const teamMatch = (selectedTeam === 'all' || game.Mandante === selectedTeam || game.Visitante === selectedTeam);
+                return seasonMatch && teamMatch;
+            });
+
+            displayResults(filteredGames, selectedSeason, selectedTeam);
+        }
+        
+        function calculateStats(games) {
+            const stats = {};
+
+            const initializeTeamStats = (team) => {
+                if (!stats[team]) {
+                    stats[team] = { P: 0, J: 0, V: 0, E: 0, D: 0, GP: 0, GC: 0, SG: 0 };
+                }
+            };
+
+            games.forEach(game => {
+                const homeTeam = game.Mandante;
+                const awayTeam = game.Visitante;
+                const homeGoals = parseInt(game['Gols Mandante'], 10);
+                const awayGoals = parseInt(game['Gols Visitante'], 10);
+                const winner = game.Vencedor;
+                
+                if(!homeTeam || !awayTeam) return;
+
+                initializeTeamStats(homeTeam);
+                initializeTeamStats(awayTeam);
+                
+                // Update stats for both teams
+                stats[homeTeam].J++;
+                stats[awayTeam].J++;
+                stats[homeTeam].GP += homeGoals;
+                stats[awayTeam].GP += awayGoals;
+                stats[homeTeam].GC += awayGoals;
+                stats[awayTeam].GC += homeGoals;
+
+                if (winner === 'M') {
+                    stats[homeTeam].V++;
+                    stats[homeTeam].P += 3;
+                    stats[awayTeam].D++;
+                } else if (winner === 'V') {
+                    stats[awayTeam].V++;
+                    stats[awayTeam].P += 3;
+                    stats[homeTeam].D++;
+                } else if (winner === 'E') {
+                    stats[homeTeam].E++;
+                    stats[awayTeam].E++;
+                    stats[homeTeam].P += 1;
+                    stats[awayTeam].P += 1;
+                }
+            });
+            
+            // Calculate goal difference and convert to array
+            const statsArray = Object.keys(stats).map(team => {
+                const teamStats = stats[team];
+                teamStats.SG = teamStats.GP - teamStats.GC;
+                return { team, ...teamStats };
+            });
+
+            // Sort by Points, Wins, Goal Difference, Goals For
+            statsArray.sort((a, b) => {
+                if (b.P !== a.P) return b.P - a.P;
+                if (b.V !== a.V) return b.V - a.V;
+                if (b.SG !== a.SG) return b.SG - a.SG;
+                if (b.GP !== a.GP) return b.GP - a.GP;
+                return a.team.localeCompare(b.team);
+            });
+
+            return statsArray;
+        }
+
+        function displayResults(games, season, team) {
+            const resultsDiv = document.getElementById('results');
+            if (games.length === 0) {
+                resultsDiv.innerHTML = '<p style="text-align: center;">Nenhum jogo encontrado para os filtros selecionados.</p>';
+                return;
+            }
+
+            const stats = calculateStats(games);
+
+            let resultsHTML = `
+                <h2>Tabela de Classificação</h2>
+                <div style="overflow-x:auto;">
+                    <table id="stats-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>P</th>
+                                <th>J</th>
+                                <th>V</th>
+                                <th>E</th>
+                                <th>D</th>
+                                <th>GP</th>
+                                <th>GC</th>
+                                <th>SG</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${stats.map(s => `
+                                <tr style="${s.team === team ? 'background-color: #c5cae9; font-weight: bold;' : ''}">
+                                    <td>${s.team}</td>
+                                    <td>${s.P}</td>
+                                    <td>${s.J}</td>
+                                    <td>${s.V}</td>
+                                    <td>${s.E}</td>
+                                    <td>${s.D}</td>
+                                    <td>${s.GP}</td>
+                                    <td>${s.GC}</td>
+                                    <td>${s.SG}</td>
+                                tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>Jogos Filtrados (${games.length})</h2>
+                <div id="games-list">
+                    ${games.slice(0, 500).map(game => `
+                        <div class="game">
+                            <span class="game-date">${game.Data}</span>
+                            <span class="game-teams">
+                                <span style="${game.Mandante === team ? 'font-weight: bold;': ''}">${game.Mandante}</span>
+                                <strong>${game['Gols Mandante']} x ${game['Gols Visitante']}</strong>
+                                <span style="${game.Visitante === team ? 'font-weight: bold;': ''}">${game.Visitante}</span>
+                            </span>
+                        </div>
+                    `).join('')}
+                    ${games.length > 500 ? '<p style="text-align:center; font-style:italic;">Mostrando os primeiros 500 jogos de ' + games.length + '.</p>' : ''}
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = resultsHTML;
+        }
+
+    </script>
+</body>
+</html>
