@@ -3,358 +3,682 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estatísticas do Campeonato Brasileiro (2003-2024)</title>
+    <title>CONGRESSO REGIONAL 2025</title>
     <style>
+        /* --- ESTILOS GERAIS --- */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
             color: #333;
             margin: 0;
             padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            background-color: #fff;
-            padding: 20px 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        h1, h2 {
-            color: #1a237e;
-            text-align: center;
-            border-bottom: 2px solid #3949ab;
-            padding-bottom: 10px;
-        }
-        .filters {
-            display: flex;
-            gap: 20px;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            background-color: #e8eaf6;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            min-height: 100vh;
         }
-        .filter-group {
+
+        /* --- TELA DE MENU PRINCIPAL --- */
+        #main-menu {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        #main-menu h1 {
+            color: #005a9c;
+            font-family: 'Noto Sans', sans-serif;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+
+        .menu-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin: 10px;
+            width: 200px;
+        }
+
+        .menu-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* --- ESTILOS DO QUIZ DE ADULTOS (ESCOPO #adult-section) --- */
+        #adult-section .quiz-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        #adult-section h1 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1em; 
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        #adult-section .question-display {
+            min-height: 200px;
             display: flex;
             flex-direction: column;
-        }
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #3d3d3d;
-        }
-        select, button {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #c5cae9;
-            font-size: 16px;
-            min-width: 200px;
-        }
-        button {
-            background-color: #3949ab;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            border: none;
-            align-self: flex-end;
-        }
-        button:hover {
-            background-color: #303f9f;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-        th {
-            background-color: #3949ab;
-            color: white;
-            font-weight: bold;
-        }
-        tbody tr:nth-child(odd) {
-            background-color: #f2f2f2;
-        }
-        tbody tr:hover {
-            background-color: #e0e0e0;
-        }
-        #stats-table th:first-child, #stats-table td:first-child {
-            text-align: left;
-            width: 25%;
-        }
-        #games-list {
-            margin-top: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-        }
-        .game {
-            display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 8px;
-            border-bottom: 1px solid #eee;
         }
-        .game:last-child {
-            border-bottom: none;
-        }
-        .game-teams {
-            flex: 1;
-            text-align: center;
-        }
-        .game-date {
-            color: #666;
-            font-size: 0.9em;
-        }
-        .loader {
-            text-align: center;
+        #adult-section .question {
+            margin-bottom: 20px;
             font-size: 1.2em;
-            padding: 40px;
+            text-align: left;
+            line-height: 1.5;
         }
+        #adult-section .options label {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: left;
+        }
+        #adult-section .options label:hover {
+            background-color: #dbe4e8;
+            transform: translateY(-2px);
+        }
+        #adult-section .options input[type="radio"] {
+            margin-right: 10px;
+            display: none;
+        }
+        #adult-section .options label.selected {
+            border: 2px solid #3498db;
+        }
+        #adult-section .options label.correct-answer {
+            background-color: #e6ffee;
+            border: 1px solid #27ae60;
+        }
+        #adult-section .options label.incorrect-answer {
+            background-color: #ffeeee;
+            border: 1px solid #e74c3c;
+        }
+        #adult-section button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 20px;
+        }
+        #adult-section button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        #adult-section button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #adult-section #feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1em;
+            text-align: left;
+            min-height: 40px;
+        }
+        #adult-section #feedback.correct {
+            background-color: #e6ffee;
+            color: #27ae60;
+            border: 1px solid #27ae60;
+        }
+        #adult-section #feedback.incorrect {
+            background-color: #ffeeee;
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+        #adult-section #results {
+            margin-top: 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        #adult-section .nav-buttons button {
+             background-color: #6c757d;
+        }
+         #adult-section .nav-buttons button:hover {
+             background-color: #5a6268;
+        }
+
+        /* --- ESTILOS DO QUIZ DE CRIANÇAS (ESCOPO #child-section) --- */
+        #child-section {
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        #child-section #game-container {
+            width: 90%;
+            max-width: 600px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 15px 25px;
+            position: relative;
+        }
+        #child-section .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+        #child-section .screen.active {
+            display: flex;
+        }
+        #child-section h1 {
+            color: #005a9c;
+            font-size: 1.76em;
+            margin: 5px 0 10px 0;
+        }
+        #child-section h2 {
+            color: #1e3a56;
+            font-size: 1.2em;
+            margin-bottom: 2px;
+        }
+        #child-section p#texto-pergunta {
+            font-size: 1.17em;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        #child-section #interactive-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            gap: 10px;
+        }
+        #child-section .nav-box {
+            flex: 0 0 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #child-section .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+            width: 100%;
+            max-width: 344px;
+            margin-top: 0;
+        }
+        #child-section button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 0.99em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            text-align: center;
+        }
+        #child-section button:hover:not(:disabled) {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        #child-section button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        #child-section button.correta {
+            background-color: #28a745;
+        }
+        #child-section button.incorreta {
+            background-color: #dc3545;
+        }
+        #child-section #botao-proximo {
+            background-color: #ffc107;
+            color: #212529;
+            font-weight: bold;
+        }
+        #child-section #botao-proximo:hover {
+            background-color: #e0a800;
+        }
+        #child-section .arrow-btn {
+            font-size: 1.5em !important;
+            font-weight: bold;
+            padding: 0 !important;
+            line-height: 45px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50% !important;
+        }
+        #child-section #justificativa-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 450px;
+            display: none;
+            font-size: 1.0em;
+            line-height: 1.5;
+            animation: fadeIn 0.5s;
+        }
+        #child-section #justificativa-box.correct {
+            background-color: #e9f7ea;
+            border: 1px solid #28a745;
+            color: #155724;
+        }
+        #child-section #justificativa-box.wrong {
+            background-color: #f8d7da;
+            border: 1px solid #dc3545;
+            color: #721c24;
+        }
+         #child-section .nav-buttons button {
+             background-color: #6c757d;
+             margin-top: 10px;
+        }
+         #child-section .nav-buttons button:hover {
+             background-color: #5a6268;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Estatísticas do Campeonato Brasileiro (2003-2024)</h1>
+    <div id="main-menu">
+        <h1>CONGRESSO REGIONAL 2025</h1>
+        <button class="menu-button" onclick="showAdultQuiz()">Adultos</button>
+        <button class="menu-button" onclick="showChildQuiz()">Crianças</button>
+    </div>
 
-        <div class="filters">
-            <div class="filter-group">
-                <label for="season-select">Selecione a Temporada:</label>
-                <select id="season-select">
-                    <option value="all">Todas as Temporadas</option>
-                </select>
+    <div id="adult-section" style="display: none;">
+        <div class="quiz-container">
+            <h1>Quiz do Congresso "Adoração Pura" 2025</h1>
+            <div id="quiz-area">
+                <div id="question-display" class="question-display"></div>
+                <div id="feedback"></div>
+                <button id="nextQuestionBtn" style="display: none;">Próxima</button>
             </div>
-            <div class="filter-group">
-                <label for="team-select">Selecione o Time:</label>
-                <select id="team-select">
-                    <option value="all">Todos os Times</option>
-                </select>
+            <div id="results"></div>
+            <div class="nav-buttons">
+                <button id="restartQuizBtn" style="display: none;">Refazer Quiz</button>
+                <button onclick="showMenu()" style="display: none;" id="menuBtnAdult">Voltar ao Menu</button>
             </div>
-            <button id="query-button">Consultar</button>
         </div>
+    </div>
 
-        <div id="results">
+    <div id="child-section" style="display: none;">
+        <div id="game-container">
+            <div id="tela-inicial" class="screen active">
+                <h1>CONGRESSO REGIONAL 2025</h1>
+                <p><strong style="color: red;">RECAPITULAÇÃO PARA CRIANÇAS</strong></p>
+                <div class="btn-grid" style="margin-top: 20px;">
+                    <button onclick="iniciarJogo()">Iniciar Desafio</button>
+                </div>
+                 <div class="nav-buttons">
+                    <button onclick="showMenu()">Voltar ao Menu</button>
+                 </div>
             </div>
+            
+            <div id="estacao-ativa" class="screen">
+                <h2 id="numero-quiz"></h2>
+                <p id="texto-pergunta"></p>
+                
+                <div id="interactive-area">
+                    <div id="caixa-botao-voltar" class="nav-box"></div>
+                    <div id="opcoes-respostas" class="btn-grid"></div>
+                    <div id="caixa-botao-proximo" class="nav-box"></div>
+                </div>
 
+                <div id="justificativa-box"></div>
+                 <div class="nav-buttons">
+                    <button onclick="showMenu()">Voltar ao Menu</button>
+                 </div>
+            </div>
+            
+            <div id="tela-final" class="screen">
+                <h1 style="color: #28a745;">Parabéns!</h1>
+                <p>Seu Aproveitamento Final: <strong id="pontuacao-final" style="font-size: 1.5em;"></strong></p>
+                <h2 style="color: #005a9c;">"Continue a imitar o zelo de Jesus Cristo."</h2>
+                <div class="btn-grid" style="margin-top: 20px;">
+                    <button onclick="reiniciarJogo()" style="background-color: #28a745;">Jogar Novamente</button>
+                </div>
+                 <div class="nav-buttons">
+                    <button onclick="showMenu()">Voltar ao Menu</button>
+                 </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        const CSV_FILE_PATH = 'Campeonatos Brasileiros 03 a 24.csv';
+        // --- LÓGICA DE NAVEGAÇÃO PRINCIPAL ---
+        const mainMenu = document.getElementById('main-menu');
+        const adultSection = document.getElementById('adult-section');
+        const childSection = document.getElementById('child-section');
 
-        let allGamesData = [];
+        function showMenu() {
+            mainMenu.style.display = 'block';
+            adultSection.style.display = 'none';
+            childSection.style.display = 'none';
+        }
+
+        function showAdultQuiz() {
+            mainMenu.style.display = 'none';
+            adultSection.style.display = 'block';
+            childSection.style.display = 'none';
+            // Inicia ou reinicia o quiz de adulto ao ser exibido
+            if (typeof restartAdultQuiz === "function") {
+                 restartAdultQuiz();
+            }
+        }
+
+        function showChildQuiz() {
+            mainMenu.style.display = 'none';
+            adultSection.style.display = 'none';
+            childSection.style.display = 'block';
+            // Garante que o jogo infantil comece da tela inicial
+            if (typeof showChildScreen === "function") {
+                 showChildScreen(document.getElementById('tela-inicial'));
+            }
+        }
+
+
+        // --- LÓGICA DO QUIZ DE ADULTOS ---
+        const adultQuestions = [
+            { question: "De acordo com o discurso de abertura, o que identifica a adoração pura?", options: ["Limitar-se a sentimentos profundos, sem necessidade de ações externas.", "Um ato de respeito e amor a Deus que envolve ações concretas.", "Apenas o reconhecimento mental da soberania de Jeová sobre tudo.", "Realizar sacrifícios de animais em um templo físico, como antigamente."], answer: "Um ato de respeito e amor a Deus que envolve ações concretas.", citation: "Anotações Congresso 2025 - Página 1, item 8" },
+            { question: "Segundo Malaquias 3:16, a que Jeová presta atenção em seus adoradores?", options: ["Aos que oferecem os maiores e mais caros sacrifícios.", "Àqueles que temem seu nome e meditam nele.", "À frequência com que frequentam o templo ou local de adoração.", "Aos que são mais vocais em criticar outros adoradores."], answer: "Àqueles que temem seu nome e meditam nele.", citation: "Anotações Congresso 2025 - Página 1, item 7" },
+            { question: "Qual destes NÃO é um dos pontos que identificam a adoração que agrada a Jeová?", options: ["Adorar exclusivamente a Jeová.", "Demonstrar amor pelo filho de Deus.", "Manter-se ativo na política mundial.", "Pregar as boas novas do Reino."], answer: "Manter-se ativo na política mundial.", citation: "Anotações Congresso 2025 - Página 1, itens 11-16" },
+            { question: "Qual foi a primeira de três ocasiões em que Jeová falou dos céus sobre Jesus?", options: ["Durante o famoso Sermão do Monte.", "Na ocasião da transfiguração de Jesus.", "No momento do batismo de Jesus.", "Quando Jesus acalmou a tempestade no mar."], answer: "No momento do batismo de Jesus.", citation: "Anotações Congresso 2025 - Página 2, item 43" },
+            { question: "O que a profecia de 2 Samuel 7:12, 13 predisse sobre o descendente do Rei Davi?", options: ["Que ele seria um profeta maior que Moisés.", "Que ele estabeleceria um reino eterno.", "Que ele construiria um templo físico grandioso.", "Que seu governo se limitaria a Israel."], answer: "Que ele estabeleceria um reino eterno.", citation: "Anotações Congresso 2025 - Página 2, item 48" },
+            { question: "O que a profecia de Daniel 9:25 indicava sobre o início do período até a aparição do Messias?", options: ["O evento da destruição de Jerusalém.", "O dia do nascimento de João Batista.", "A ordem para reconstruir Jerusalém.", "A coroação de um novo rei em Israel."], answer: "A ordem para reconstruir Jerusalém.", citation: "Anotações Congresso 2025 - Página 3, item 65" },
+            { question: "Por que Satanás ofereceu a Jesus 'TODOS os reinos' durante a tentação no deserto?", options: ["Para provar que seu poder era superior ao de Jeová.", "Porque Jesus pediu para ver todos os reinos existentes.", "Pois a autoridade sobre eles lhe foi entregue no Éden.", "Porque Satanás não tinha nada mais valioso para oferecer."], answer: "Pois a autoridade sobre eles lhe foi entregue no Éden.", citation: "Anotações Congresso 2025 - Página 3, item 80" },
+            { question: "O que o discurso 'Quem realmente governa o mundo?' ensina sobre a neutralidade, conforme Tito 3:1, 2?", options: ["Envolve opor-se a todas as leis dos governos humanos.", "Inclui não falar mal das autoridades governamentais.", "Significa não pagar impostos a nenhum governo existente.", "É recusar-se a obedecer a qualquer regra do governo."], answer: "Inclui não falar mal das autoridades governamentais.", citation: "Anotações Congresso 2025 - Página 4, item 96" },
+            { question: "Qual princípio de Marcos 12:17 é essencial ao decidir sobre exigências dos governos?", options: ["Obedecer a César em tudo, sem questionar suas ordens.", "Priorizar os interesses pessoais acima das leis de Deus.", "Pagar a César o que é de César, e a Deus o que é de Deus.", "Evitar toda e qualquer interação com as autoridades."], answer: "Pagar a César o que é de César, e a Deus o que é de Deus.", citation: "Anotações Congresso 2025 - Página 4, item 99" },
+            { question: "Qual foi a tentação descrita em Mateus 4:5,6 e como Jesus respondeu?", options: ["Transformar pedras em pães; Jesus disse que não só de pão vive o homem.", "Lançar-se do templo; Jesus citou Deuteronômio 6:16 para não testar a Deus.", "Adorar a Satanás; Jesus respondeu que se deve adorar apenas a Jeová.", "Abandonar sua missão; Jesus simplesmente ignorou a tentação e foi embora."], answer: "Lançar-se do templo; Jesus citou Deuteronômio 6:16 para não testar a Deus.", citation: "Anotações Congresso 2025 - Página 6, itens 133-136" },
+            { question: "De acordo com as anotações, como Satanás usa as redes sociais para nos tentar?", options: ["Promovendo a leitura diária da Bíblia em grupos.", "Estimulando a ostentação de bens e a inveja.", "Incentivando um estilo de vida mais simples e modesto.", "Divulgando informações corretas sobre a adoração pura."], answer: "Estimulando a ostentação de bens e a inveja.", citation: "Anotações Congresso 2025 - Página 6, item 140" },
+            { question: "Que lição o Deserto da Judeia nos ensina, a partir do exemplo de João e Jesus?", options: ["A necessidade de sempre evitar lugares isolados e perigosos.", "A importância de acumular muitas riquezas para o futuro.", "O valor de uma vida simples, sacrifícios e meditação.", "Que é essencial estar sempre acompanhado de outras pessoas."], answer: "O valor de uma vida simples, sacrifícios e meditação.", citation: "Anotações Congresso 2025 - Página 8, item 183" },
+            { question: "No Vale do Jordão, qual lição sobre humildade podemos aprender?", options: ["Que devemos nos orgulhar de nosso conhecimento superior.", "Que a humildade é um sinal de fraqueza espiritual.", "A importância de sermos obedientes e humildes no batismo.", "Que apenas pessoas perfeitas podem ser batizadas por Deus."], answer: "A importância de sermos obedientes e humildes no batismo.", citation: "Anotações Congresso 2025 - Página 9, item 196" },
+            { question: "O que aprendemos sobre Jerusalém e a necessidade de ajustar nossos pensamentos hoje?", options: ["A Jerusalém celestial substituiu a literal, exigindo ajustes e apoio à organização.", "A cidade de Jerusalém literal ainda é o centro da adoração pura na Terra.", "Devemos nos apegar unicamente às tradições antigas de adoração.", "Não existe mais a necessidade de uma adoração organizada por Deus."], answer: "A Jerusalém celestial substituiu a literal, exigindo ajustes e apoio à organização.", citation: "Anotações Congresso 2025 - Página 9, itens 211-214" },
+            { question: "Ao analisar a Samaria, o que Jesus nos ensinou sobre como tratar as pessoas?", options: ["Devemos evitar contato com pessoas de outras religiões e culturas.", "A rivalidade entre povos é natural e deve ser mantida.", "Tratar a todos com imparcialidade, como possíveis servos de Jeová.", "Apenas os judeus daquela época eram dignos da atenção de Deus."], answer: "Tratar a todos com imparcialidade, como possíveis servos de Jeová.", citation: "Anotações Congresso 2025 - Página 10, itens 227-230" },
+            { question: "O que Jesus, como 'escultor experiente', faz por nós?", options: ["Trabalha com paciência para nos transformar, pois nos conhece bem.", "Julga-nos estritamente por nossos erros, sem ver nosso potencial.", "Interessa-se apenas por aqueles que já demonstram ser perfeitos.", "Ignora nossas qualidades, focando somente em nossas fraquezas."], answer: "Trabalha com paciência para nos transformar, pois nos conhece bem.", citation: "Anotações Congresso 2025 - Página 12, item 270" },
+            { question: "O que João Batista demonstrou ao direcionar seus discípulos para Jesus?", options: ["Humildade, reconhecendo que seu papel diminuiria e o de Jesus aumentaria.", "Uma clara falta de liderança e controle sobre seus seguidores.", "Um orgulho excessivo por ter sido o instrutor dos discípulos de Jesus.", "Medo de perder a proeminência e a admiração de seus seguidores."], answer: "Humildade, reconhecendo que seu papel diminuiria e o de Jesus aumentaria.", citation: "Anotações Congresso 2025 - Página 15, itens 339-341" },
+            { question: "Como podemos imitar o exemplo de André, que agiu imediatamente ao encontrar o Messias?", options: ["Demorando para tomar decisões espirituais importantes.", "Agindo prontamente ao conhecer a verdade e buscando servir mais.", "Ignorando o chamado da verdade para focar em metas pessoais.", "Esperando que outros nos digam exatamente o que fazer."], answer: "Agindo prontamente ao conhecer a verdade e buscando servir mais.", citation: "Anotações Congresso 2025 - Página 16, itens 366-369" },
+            { question: "O que o exemplo de Pedro nos ensina sobre a lealdade a Jesus?", options: ["Que a lealdade exige perfeição, sem margem para falhas.", "Que mesmo falhando, podemos ser leais e continuar servindo a Deus.", "Que lealdade significa sempre se defender de qualquer acusação.", "Que devemos desistir de servir a Deus após cometer um erro."], answer: "Que mesmo falhando, podemos ser leais e continuar servindo a Deus.", citation: "Anotações Congresso 2025 - Página 16, itens 377-379" },
+            { question: "Como João, primo de Jesus, demonstrou humildade apesar da ambição inicial?", options: ["Exigindo um lugar de destaque no Reino celestial.", "Evitou citar o próprio nome no Evangelho que escreveu.", "Sempre citava seu nome para destacar sua importância.", "Competia abertamente com os outros discípulos por atenção."], answer: "Evitou citar o próprio nome no Evangelho que escreveu.", citation: "Anotações Congresso 2025 - Página 17, item 390" },
+            { question: "O que o apelido de Tiago, 'filho do trovão', indicava sobre ele?", options: ["Que ele era uma pessoa agressiva, impaciente e sem controle.", "Era impetuoso e dinâmico, com zelo pela adoração pura.", "Gostava de ser barulhento e sempre chamar atenção para si.", "Era medroso e não tinha coragem de defender a verdade."], answer: "Era impetuoso e dinâmico, com zelo pela adoração pura.", citation: "Anotações Congresso 2025 - Página 18, itens 410-418" },
+            { question: "O que o exemplo de Filipe, que não desistiu de Natanael, nos ensina?", options: ["Que devemos desistir facilmente das pessoas com dúvidas.", "Que é inútil tentar conversar com pessoas negativas.", "A importância de continuar o ministério com amor e persistência.", "Que a persistência no ministério é apenas para os novatos."], answer: "A importância de continuar o ministério com amor e persistência.", citation: "Anotações Congresso 2025 - Página 19, itens 434-436" },
+            { question: "O que podemos aprender com Natanael para sermos adoradores puros?", options: ["Manter nossas primeiras impressões, pois geralmente estão certas.", "Sermos honestos, sem engano ou hipocrisia, e aceitar conselhos.", "Ter um pouco de falsidade, desde que sigamos a Jesus no final.", "Acreditar que a crítica inicial sobre alguém é sempre justificada."], answer: "Sermos honestos, sem engano ou hipocrisia, e aceitar conselhos.", citation: "Anotações Congresso 2025 - Página 20, itens 455-456" },
+            { question: "No primeiro milagre de Jesus, o que aprendemos sobre compaixão?", options: ["Que Jesus só ajudava as pessoas que pediam diretamente.", "Mostrar sincera preocupação com os sentimentos dos outros.", "Devemos ignorar as necessidades alheias para não interferir.", "Milagres são feitos apenas para provar o poder divino."], answer: "Mostrar sincera preocupação com os sentimentos dos outros.", citation: "Anotações Congresso 2025 - Página 23, itens 515-519" },
+            { question: "O que Jesus demonstrou ao não chamar atenção para si no milagre do vinho?", options: ["Que ele não se importava com o reconhecimento dos outros.", "Humildade, pois não devemos nos gabar do que fazemos.", "Que ele era tímido e sempre evitava grandes públicos.", "Que ele queria que o diretor da festa descobrisse sozinho."], answer: "Humildade, pois não devemos nos gabar do que fazemos.", citation: "Anotações Congresso 2025 - Página 23, itens 525-529" },
+            { question: "O que a grande quantidade de vinho que Jesus fez nos ensina sobre generosidade?", options: ["Que devemos ser avarentos para guardar mais recursos.", "A importância dos sentimentos das pessoas e a prática de dar.", "Que devemos dar apenas o mínimo necessário aos outros.", "Que a quantidade do que damos não importa, apenas a intenção."], answer: "A importância dos sentimentos das pessoas e a prática de dar.", citation: "Anotações Congresso 2025 - Página 23, itens 533-535" },
+            { question: "Qual profecia se cumpriu quando Jesus purificou o templo?", options: ["A profecia de Isaías 42:1 sobre o servo escolhido.", "O Salmo 69:9: 'O zelo pela tua casa me consumirá'.", "O Salmo 2:7 sobre ser declarado Filho de Deus.", "A profecia de Mateus 24:14 sobre a pregação mundial."], answer: "O Salmo 69:9: 'O zelo pela tua casa me consumirá'.", citation: "Anotações Congresso 2025 - Página 25, item 565" },
+            { question: "Por que as 'boas novas aos mansos' de Jesus eram diferentes das dos líderes religiosos?", options: ["Porque ele amaldiçoava as pessoas que não o seguiam.", "Porque ele focava sua mensagem apenas em assuntos políticos.", "Porque ele trazia livramento do pecado e da morte.", "Porque ele incentivava a busca pela ganância material."], answer: "Porque ele trazia livramento do pecado e da morte.", citation: "Anotações Congresso 2025 - Página 27, item 612" },
+            { question: "Como Jesus ajudou Nicodemos a superar sua crença na imortalidade da alma?", options: ["Confrontando-o diretamente sobre seu erro doutrinal.", "Explicando que 'nenhum homem subiu ao céu', sem confronto.", "Ignorando a crença dele e falando com outras pessoas.", "Exigindo que Nicodemos acreditasse nele sem questionar."], answer: "Explicando que 'nenhum homem subiu ao céu', sem confronto.", citation: "Anotações Congresso 2025 - Página 33, itens 740-741" },
+            { question: "O que Jesus quis dizer com a expressão 'meu alimento' em João 4:34?", options: ["Que ele só comia o que Jeová lhe fornecia milagrosamente.", "Sentia-se fortalecido ao fazer a vontade de Jeová.", "Que ele nunca precisava de alimento físico para viver.", "Que ele preferia alimentos espirituais a comida literal."], answer: "Sentia-se fortalecido ao fazer a vontade de Jeová.", citation: "Anotações Congresso 2025 - Página 35, item 779" },
+            { question: "Quando Jesus disse que os campos 'estavam brancos para a colheita', a que ele se referia?", options: ["Às colheitas agrícolas que estavam prontas para serem ceifadas.", "Ao clima quente da época, que era ideal para a pregação.", "Às pessoas de coração sincero prontas para aceitar a verdade.", "A uma profecia específica sobre o fim dos tempos na terra."], answer: "Às pessoas de coração sincero prontas para aceitar a verdade.", citation: "Anotações Congresso 2025 - Página 35, item 792" },
+            { question: "O que significa adorar a Jeová 'com espírito e verdade' (João 4:23, 24)?", options: ["Adorar apenas com sentimentos, sem a necessidade de ações.", "Adorar obrigatoriamente em um local físico específico.", "Com motivação correta e ações em harmonia com a vontade de Deus.", "Apenas seguindo as tradições religiosas de nossa família e cultura."], answer: "Com motivação correta e ações em harmonia com a vontade de Deus.", citation: "Anotações Congresso 2025 - Página 39, itens 881-882" },
+            { question: "Quais são 3 ajudas para continuarmos no grande templo espiritual de Jeová?", options: ["Apenas orar, ler a Bíblia e ir às reuniões regularmente.", "Defender os padrões de Deus, oferecer bons sacrifícios e imitar a Jesus.", "Focar em nossa vida pessoal, ignorando as necessidades da congregação.", "Participar ativamente de todas as atividades sociais do mundo."], answer: "Defender os padrões de Deus, oferecer bons sacrifícios e imitar a Jesus.", citation: "Anotações Congresso 2025 - Página 40, itens 887-900" },
+            { question: "O que o Congresso nos ajudaria a fazer em relação à nossa adoração pura?", options: ["Apenas entender o significado teórico da adoração.", "Introduzir novas e diferentes formas de adoração.", "Fazer ajustes para melhorar nossa adoração a Jeová.", "Diminuir a intensidade de nossa adoração para evitar o cansaço."], answer: "Fazer ajustes para melhorar nossa adoração a Jeová.", citation: "Anotações Congresso 2025 - Página 1, item 6" },
+            { question: "O que Apocalipse 13:4 explica sobre a 'fera' e o 'dragão'?", options: ["A fera e o dragão são símbolos de sistemas religiosos falsos.", "O dragão representa o criador de todos os governos bons.", "Adorar a fera (sistema político) equivale a adorar o dragão (Satanás).", "A fera é uma representação da natureza selvagem dos animais."], answer: "Adorar a fera (sistema político) equivale a adorar o dragão (Satanás).", citation: "Anotações Congresso 2025 - Página 4, item 89" },
+            { question: "Como o zelo de Jesus pela casa de Jeová o identifica como o Messias?", options: ["Porque ele era um excelente construtor de templos.", "Sua dedicação cumpriu a profecia do Salmo 69:9.", "Porque ele realizava seus milagres apenas no templo.", "Porque ele permitia todo tipo de comércio no templo."], answer: "Sua dedicação cumpriu a profecia do Salmo 69:9.", citation: "Anotações Congresso 2025 - Página 27, item 603" },
+            { question: "O que o exemplo de Naamã, um sírio, nos ensina, conforme o discurso 'Lições da terra de Jesus'?", options: ["Que devemos evitar pessoas de outras nacionalidades em nossa adoração.", "Que é importante ser arrogante para desenvolver uma fé forte.", "Que a religião de uma pessoa não importa para se ter fé em Deus.", "Que precisamos ser humildes e demonstrar uma fé forte em Jeová."], answer: "Que precisamos ser humildes e demonstrar uma fé forte em Jeová.", citation: "Anotações Congresso 2025 - Página 11, item 265" },
+            { question: "Por que Malaquias profetizou que Jeová reuniria um povo para seu nome?", options: ["Para mostrar a superioridade de uma nação sobre as outras.", "Para ter uma propriedade especial, dando-lhe ajuda para lidar com problemas.", "Porque Jeová desejava ter apenas uma pequena elite de adoradores.", "A profecia era apenas para os dias antigos e não tem aplicação hoje."], answer: "Para ter uma propriedade especial, dando-lhe ajuda para lidar com problemas.", citation: "Anotações Congresso 2025 - Página 22, itens 500-503" },
+            { question: "Qual foi a principal razão pela qual Jesus se batizou?", options: ["Para se arrepender de pecados que ele havia cometido.", "Para se apresentar para fazer a vontade de Jeová como o Messias.", "Para se tornar parte da nação que já era dedicada a Jeová.", "Para simplesmente seguir o bom exemplo de João Batista."], answer: "Para se apresentar para fazer a vontade de Jeová como o Messias.", citation: "Anotações Congresso 2025 - Página 22, item 493" },
+            { question: "O que é o pecado e como Jeová nos resgatou, segundo o discurso 'Como 'o Cordeiro de Deus' tira os pecados'?", options: ["Uma doença da qual podemos nos curar com nossa própria força.", "Uma doença que contaminou a humanidade, resgatada pelo amor de Jeová.", "Uma escolha individual, e Jeová resgata apenas os que são perfeitos.", "Algo insignificante com o qual Jeová não se importa muito."], answer: "Uma doença que contaminou a humanidade, resgatada pelo amor de Jeová.", citation: "Anotações Congresso 2025 - Página 24, itens 539, 545" }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questionDisplay = document.getElementById('question-display');
+        const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+        const feedbackDiv = document.getElementById('feedback');
+        const resultsDiv = document.getElementById('results');
+        const quizArea = document.getElementById('quiz-area');
+        const restartQuizBtn = document.getElementById('restartQuizBtn');
+        const menuBtnAdult = document.getElementById('menuBtnAdult');
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            document.getElementById('query-button').addEventListener('click', runQuery);
+            if (questionDisplay) {
+                loadAdultQuestion();
+                nextQuestionBtn.addEventListener('click', nextAdultQuestion);
+                restartQuizBtn.addEventListener('click', restartAdultQuiz);
+            }
         });
 
-        async function loadData() {
-            try {
-                const response = await fetch(CSV_FILE_PATH);
-                if (!response.ok) {
-                    throw new Error(`Erro ao carregar o arquivo: ${response.statusText}`);
-                }
-                const text = await response.text();
-                allGamesData = parseCSV(text);
+        function loadAdultQuestion() {
+            if (currentQuestionIndex < adultQuestions.length) {
+                const q = adultQuestions[currentQuestionIndex];
+                questionDisplay.innerHTML = `
+                    <p class="question">${currentQuestionIndex + 1} de ${adultQuestions.length}. <b>${q.question}</b></p>
+                    <div class="options">
+                        ${q.options.map((option, i) => `
+                            <label>
+                                <input type="radio" name="currentQuestion" value="${option}"> <span>${option}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                
+                nextQuestionBtn.style.display = 'none';
+                feedbackDiv.textContent = '';
+                feedbackDiv.className = '';
+                resultsDiv.style.display = 'none';
+                restartQuizBtn.style.display = 'none';
+                menuBtnAdult.style.display = 'none';
 
-                populateFilters();
-                runQuery(); // Run initial query to show all data
-            } catch (error) {
-                const resultsDiv = document.getElementById('results');
-                resultsDiv.innerHTML = `<p style="color: red; text-align: center;"><b>Erro:</b> ${error.message}.<br>Verifique se o arquivo CSV está na mesma pasta que este HTML e se o nome está correto.</p>`;
-                console.error("Falha ao carregar ou processar o CSV:", error);
+                questionDisplay.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', () => {
+                        checkAdultAnswer(radio);
+                    });
+                });
+
+            } else {
+                showAdultResults();
             }
         }
 
-        function parseCSV(text) {
-            const lines = text.trim().split('\n');
-            const headers = lines[0].split(',').map(h => h.trim());
-            const data = [];
+        function checkAdultAnswer(selectedRadio) {
+            const currentQuestion = adultQuestions[currentQuestionIndex];
+            const selectedOptionLabel = selectedRadio.closest('label');
+            const correctAnswer = currentQuestion.answer;
 
-            for (let i = 1; i < lines.length; i++) {
-                if (lines[i].trim() === '') continue;
-                const values = lines[i].split(',');
-                const entry = {};
-                for (let j = 0; j < headers.length; j++) {
-                    entry[headers[j]] = values[j] ? values[j].trim() : '';
+            questionDisplay.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.disabled = true;
+                const label = radio.closest('label');
+                if (radio.value === correctAnswer) {
+                    label.classList.add('correct-answer');
                 }
-                data.push(entry);
+            });
+
+            if (selectedRadio.value === correctAnswer) {
+                score++;
+            } else {
+                selectedOptionLabel.classList.add('incorrect-answer');
             }
-            return data;
+            
+            nextQuestionBtn.style.display = 'block';
         }
 
-        function populateFilters() {
-            const seasons = [...new Set(allGamesData.map(game => game.Temporada))].sort((a,b) => b-a);
-            const teamsHome = allGamesData.map(game => game.Mandante);
-            const teamsAway = allGamesData.map(game => game.Visitante);
-            const teams = [...new Set([...teamsHome, ...teamsAway])].sort();
-
-            const seasonSelect = document.getElementById('season-select');
-            seasons.forEach(season => {
-                const option = new Option(season, season);
-                seasonSelect.add(option);
-            });
-
-            const teamSelect = document.getElementById('team-select');
-            teams.forEach(team => {
-                const option = new Option(team, team);
-                teamSelect.add(option);
-            });
+        function nextAdultQuestion() {
+            currentQuestionIndex++;
+            loadAdultQuestion();
         }
 
-        function runQuery() {
-            const selectedSeason = document.getElementById('season-select').value;
-            const selectedTeam = document.getElementById('team-select').value;
+        function showAdultResults() {
+            quizArea.style.display = 'none';
+            const percentage = (score / adultQuestions.length) * 100;
+            resultsDiv.innerHTML = `Você finalizou o quiz!<br>Você acertou ${score} de ${adultQuestions.length} perguntas (${percentage.toFixed(2)}%)!`;
+            resultsDiv.style.display = 'block';
+            restartQuizBtn.style.display = 'inline-block';
+            menuBtnAdult.style.display = 'inline-block';
+        }
 
-            const filteredGames = allGamesData.filter(game => {
-                const seasonMatch = (selectedSeason === 'all' || game.Temporada === selectedSeason);
-                const teamMatch = (selectedTeam === 'all' || game.Mandante === selectedTeam || game.Visitante === selectedTeam);
-                return seasonMatch && teamMatch;
-            });
+        function restartAdultQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            quizArea.style.display = 'block';
+            resultsDiv.style.display = 'none';
+            restartQuizBtn.style.display = 'none';
+            menuBtnAdult.style.display = 'none';
+            loadAdultQuestion();
+        }
 
-            displayResults(filteredGames, selectedSeason, selectedTeam);
+
+        // --- LÓGICA DO QUIZ DE CRIANÇAS ---
+        const gincanaData = [
+            { pergunta: "Onde Jesus foi batizado?", opcoes: ["Rio Nilo", "Rio Jordão", "Mar Vermelho", "Mar da Galileia", "Rio Eufrates"], respostaCorreta: 1, justificativas: ["Incorreto. O Rio Nilo fica no Egito. O batismo de Jesus ocorreu em Israel.", "Correto! Mateus 3:13 diz: 'Jesus foi então da Galileia para o Jordão, a fim de ser batizado por João'.", "Incorreto. O Mar Vermelho está associado ao Êxodo dos israelitas, liderados por Moisés.", "Incorreto. Embora Jesus tenha passado muito tempo perto do Mar da Galileia, não foi batizado ali.", "Incorreto. O Rio Eufrates é um importante rio da Mesopotâmia, mas não está ligado ao batismo de Jesus."] },
+            { pergunta: "Qual líder religioso começou a seguir Jesus em segredo?", opcoes: ["Zaqueu", "João", "Nicodemos", "Caifás", "Anás"], respostaCorreta: 2, justificativas: ["Incorreto. Zaqueu, o cobrador de impostos, encontrou Jesus durante o dia.", "Incorreto. O apóstolo João foi um dos primeiros a seguir Jesus abertamente.", "Correto! João 3:1, 2 mostra que Nicodemos, um fariseu, foi até Jesus à noite para não ser visto.", "Incorreto. Caifás era o sumo sacerdote que se opôs a Jesus.", "Incorreto. Anás também era um dos principais opositores de Jesus."] },
+            { pergunta: "O primeiro milagre registrado de Jesus foi transformar _______ em ______.", opcoes: ["vinho em água", "água em vinho", "água em azeite", "azeite em farinha", "farinha em vinho"], respostaCorreta: 1, justificativas: ["Incorreto. O milagre envolveu a transformação de uma substância em outra de maior qualidade, mas não nesta ordem.", "Correto! Em um casamento em Caná, Jesus transformou água em vinho de excelente qualidade, como lemos em João 2:1-11.", "Incorreto. Este tipo de milagre é registrado nas Escrituras Hebraicas, associado a outro profeta.", "Incorreto. Um milagre envolvendo esses elementos que não se esgotavam foi realizado por um profeta, mas não foi o primeiro milagre de Jesus.", "Incorreto. Não há registro de um milagre como este na Bíblia."] },
+            { pergunta: "O espírito santo desceu sobre Jesus na forma de que animal?", opcoes: ["Pomba", "Gafanhoto", "Borboleta", "Gavião", "Águia"], respostaCorreta: 0, justificativas: ["Correto! Conforme Mateus 3:16, 'o espírito de Deus desceu como pomba e veio sobre ele'.", "Incorreto. Gafanhotos estão ligados a outra pessoa nesta cena, mas não eram a forma do espírito santo.", "Incorreto. A Bíblia não faz menção a borboletas neste evento.", "Incorreto. Embora seja uma ave de rapina, não foi a forma descrita na Bíblia.", "Incorreto. A Bíblia especifica que era outro animal, um símbolo de pureza e paz."] },
+            { pergunta: "O que Jesus demonstrava ter pelo templo?", opcoes: ["Desprezo", "Zelo", "Desrespeito", "Medo", "Poder"], respostaCorreta: 1, justificativas: ["Incorreto. A ação de Jesus de purificar o templo mostrou o oposto deste sentimento.", "Correto! João 2:17 relata que os discípulos se lembraram da profecia: 'O zelo pela tua casa me consumirá'.", "Incorreto. Jesus agiu para restaurar a santidade do templo, não para desrespeitá-lo.", "Incorreto. Jesus agiu com coragem e autoridade divina no templo, não com medo.", "Incorreto. Embora ele tenha demonstrado poder, o sentimento que o motivou foi uma forte devoção pela adoração pura."] },
+            { pergunta: "De qual região eram a maioria dos primeiros apóstolos de Jesus?", opcoes: ["Fenícia", "Jerusalém", "Galileia", "Nazaré", "Síria"], respostaCorreta: 2, justificativas: ["Incorreto. A Fenícia era uma região costeira vizinha, mas não a origem da maioria dos apóstolos.", "Incorreto. Jerusalém era o centro religioso na Judeia, mas os primeiros apóstolos não eram desta cidade'.", "Correto! Pedro, André, Tiago e João eram da Galileia (Atos 1:11). Jesus começou seu ministério naquela região.", "Incorreto. Nazaré era a cidade onde Jesus cresceu, mas a maioria dos apóstolos era de outra da região.", "Incorreto. A Síria é uma região mais ao norte e não era a origem dos apóstolos."] },
+            { pergunta: "Quem teve o privilégio de batizar Jesus Cristo?", opcoes: ["Pedro", "Moisés", "Abraão", "João Batista", "Paulo"], respostaCorreta: 3, justificativas: ["Incorreto. Este apóstolo só se tornou seguidor de Jesus depois do batismo dele.", "Incorreto. Este profeta viveu muitos séculos antes de Jesus.", "Incorreto. Este patriarca viveu muito antes do tempo de Jesus.", "Correto! Jeová designou João Batista com a missão especial de preparar o caminho para Jesus e batizá-lo (Mateus 3:13).", "Incorreto. Este apóstolo se tornou seguidor de Cristo anos após a morte e ressurreição de Jesus."] },
+            { pergunta: "Qual é o tema do nosso congresso de 2025?", opcoes: ["Adoração Verdadeira", "Adoração Pura", "Zelo na Adoração", "Zelo de Jesus", "Jesus nosso exemplo"], respostaCorreta: 1, justificativas: ["Incorreto. Embora nossa adoração deva ser verdadeira, o tema destaca outra qualidade essencial.", "Correto! O tema 'Adoração Pura' nos lembra da importância de manter nossa adoração a Jeová sem contaminação.", "Incorreto. Embora o zelo seja crucial, não foi o tema central deste congresso.", "Incorreto. Embora o zelo de Jesus seja um exemplo, o tema foi mais abrangente.", "Incorreto. Jesus é sempre nosso maior exemplo, mas o tema deste ano focou na qualidade da nossa adoração."] },
+            { pergunta: "O que a voz vinda do céu falou para Jesus depois do Batismo?", opcoes: ["'Está consumado'", "'Este é meu filho, o amado'", "'Venha o teu reino'", "'O pai é maior do que eu'", "'Seja feita tua vontade'"], respostaCorreta: 1, justificativas: ["Incorreto. Essas foram algumas das últimas palavras de Jesus na estaca de tortura (João 19:30).", "Correto! Mateus 3:17 relata: 'E uma voz vinda dos céus disse: \"Este é meu Filho, o amado, a quem eu aprovo\"'.", "Incorreto. Esta é uma parte da oração-modelo que Jesus ensinou a seus discípulos.", "Incorreto. Jesus disse essas palavras aos seus discípulos em outra ocasião, para explicar sua relação com o Pai.", "Incorreto. Esta também é uma parte da oração-modelo que Jesus ensinou."] },
+            { pergunta: "Qual o nome da mãe de Jesus?", opcoes: ["Marta", "Samaritana", "Elisabete", "Jezabel", "Maria"], respostaCorreta: 4, justificativas: ["Incorreto. Marta era uma grande amiga de Jesus, mas não sua mãe.", "Incorreto. A mulher samaritana teve uma conversa importante com Jesus, mas não era sua mãe.", "Incorreto. Elisabete era parente de Jesus, mas era mãe de outra pessoa importante mencionada nos evangelhos.", "Incorreto. Jezabel foi uma rainha má do antigo Israel, que viveu muitos séculos antes.", "Correto! O anjo Gabriel anunciou a Maria que ela seria a mãe de Jesus, conforme o relato de Lucas 1:30, 31."] },
+            { pergunta: "Quantos dias Jesus jejuou no deserto?", opcoes: ["3", "7", "40", "10", "30"], respostaCorreta: 2, justificativas: ["Incorreto. Embora 3 seja um número significativo na Bíblia, não foi o tempo do jejum de Jesus.", "Incorreto. A Bíblia não menciona um jejum de 7 dias de Jesus no deserto.", "Correto! Mateus 4:2 e Lucas 4:2 afirmam que Jesus jejuou por 40 dias e 40 noites.", "Incorreto. Este não é o período de tempo mencionado nos Evangelhos.", "Incorreto. O período mencionado na Bíblia foi mais longo do que este."] },
+            { pergunta: "Quantas tentações específicas de Satanás a Jesus são registradas no deserto?", opcoes: ["1", "2", "3", "4", "5"], respostaCorreta: 2, justificativas: ["Incorreto. Foram mais tentações registradas.", "Incorreto. Foram mais do que duas tentações.", "Correto! Os relatos de Mateus 4 e Lucas 4 descrevem três tentações principais: transformar pedras em pão, saltar do templo e adorar a Satanás.", "Incorreto. O registro bíblico detalha uma quantidade de episódios diferente.", "Incorreto. O número de tentações registradas é menor."] },
+            { pergunta: "Uma das tentações no deserto foi para que Jesus transformasse pedras em quê?", opcoes: ["Carne", "Peixe", "Pão", "Maná", "Vinho"], respostaCorreta: 2, justificativas: ["Incorreto. A tentação não envolveu transformar pedras em carne.", "Incorreto. Jesus realizou um milagre famoso envolvendo peixes em outra ocasião, mas esta tentação era sobre um alimento mais básico.", "Correto! Em Mateus 4:3, a primeira tentação registrada foi: 'Se você é Filho de Deus, diga a estas pedras que se transformem em pães.'", "Incorreto. Maná foi um alimento milagroso dado aos israelitas no passado, mas a tentação de Jesus envolveu um alimento comum.", "Incorreto. O primeiro milagre de Jesus envolveu transformar água, não pedras."] },
+            { pergunta: "O que Jesus fez quando viu pessoas vendendo no templo?", opcoes: ["Elogiou", "Ajudou", "Expulsou a todos", "Riu", "Chorou"], respostaCorreta: 2, justificativas: ["Incorreto. Jesus ficou indignado, não feliz com a situação.", "Incorreto. Ele não ajudou o comércio, pois desonrava a casa de seu Pai.", "Correto! Movido por zelo, Jesus expulsou os comerciantes e cambistas, purificando o templo (João 2:15, 16).", "Incorreto. A reação de Jesus foi de seriedade e autoridade, não de divertimento.", "Incorreto. Jesus chorou por Jerusalém, mas no templo sua ação foi de indignação e correção."] },
+            { pergunta: "Qual era a profissão de Pedro antes de se tornar um apóstolo?", opcoes: ["Cobrador de impostos", "Médico", "Comerciante", "Soldado", "Pescador"], respostaCorreta: 4, justificativas: ["Incorreto. Essa era a profissão de outro apóstolo, não de Pedro.", "Incorreto. Essa profissão é associada a um dos escritores dos Evangelhos, que não era um dos 12 apóstolos.", "Incorreto. Não há registro de Pedro ser um comerciante.", "Incorreto. Não há apóstolos conhecidos por terem sido soldados.", "Correto! Mateus 4:18-20 mostra Jesus chamando Pedro enquanto ele pescava no mar da Galileia."] },
+            { pergunta: "Quem era o irmão do apóstolo André?", opcoes: ["Filipe", "Tiago", "Pedro", "João", "Lucas"], respostaCorreta: 2, justificativas: ["Incorreto. Filipe era um apóstolo, mas não irmão de André.", "Incorreto. Tiago tinha outro apóstolo como irmão, mas não era André.", "Correto! João 1:40, 41 mostra que André, após encontrar Jesus, foi primeiro procurar seu próprio irmão, Simão Pedro.", "Incorreto. João também tinha um irmão entre os apóstolos, mas não era André.", "Incorreto. Lucas era um companheiro de viagem de Paulo, não um dos 12 apóstolos."] },
+            { pergunta: "O que a mulher samaritana fazia quando encontrou Jesus no poço?", opcoes: ["Descansando", "Tirando água", "Fazendo compras", "Cozinhando", "Adorando no templo"], respostaCorreta: 1, justificativas: ["Incorreto. Ela estava em uma atividade específica, não apenas descansando.", "Correto! João 4:7 diz que uma mulher de Samaria veio para tirar água, e foi nesse momento que Jesus falou com ela.", "Incorreto. O encontro aconteceu num local fora da cidade, não numa área de compras.", "Incorreto. Ela estava buscando algo para provavelmente cozinhar mais tarde, mas não estava cozinhando no momento.", "Incorreto. A conversa foi sobre onde adorar, mas eles não estavam no templo."] },
+            { pergunta: "Onde Jesus realizou seu primeiro milagre?", opcoes: ["Numa festa de casamento", "No templo", "No rio", "No mar", "No deserto"], respostaCorreta: 0, justificativas: ["Correto! O Evangelho de João 2:1-11 descreve que o primeiro milagre de Jesus foi transformar água em vinho numa festa de casamento em Caná da Galileia.", "Incorreto. No templo, Jesus demonstrou zelo ao purificá-lo, mas este não foi seu primeiro milagre.", "Incorreto. Jesus foi batizado num rio, mas seu primeiro milagre ocorreu depois disso.", "Incorreto. Milagres como acalmar a tempestade ocorreram no mar, mas não foram o primeiro.", "Incorreto. No deserto, Jesus jejuou e foi tentado; ele se recusou a fazer um milagre para si mesmo."] },
+            { pergunta: "O que João Batista comia no deserto?", opcoes: ["Gafanhotos e mel silvestre", "Maná", "Pão e vinho", "Ervas", "Cordeiro"], respostaCorreta: 0, justificativas: ["Correto! Mateus 3:4 e Marcos 1:6 especificam que a dieta de João consistia em gafanhotos e mel silvestre.", "Incorreto. Maná foi o alimento providenciado por Deus para os israelitas nos dias de Moisés.", "Incorreto. Estes elementos são associados a uma comemoração importante instituída por Jesus.", "Incorreto. Embora pudesse comer ervas, a Bíblia destaca um alimento mais específico.", "Incorreto. O cordeiro era um alimento importante em certas festividades, mas não era a dieta diária da pessoa em questão."] },
+            { pergunta: "Qual o nome do pai adotivo de Jesus?", opcoes: ["José", "Isaque", "Davi", "Abraão", "Jacó"], respostaCorreta: 0, justificativas: ["Correto! Conforme Mateus 1:18, 19, José era o noivo de Maria e a aceitou como esposa, tornando-se o pai terrestre (ou adotivo) de Jesus.", "Incorreto. Isaque foi um patriarca, filho de Abraão.", "Incorreto. O pai adotivo de Jesus era um descendente do rei Davi, cumprindo a profecia.", "Incorreto. Abraão foi o ancestral da nação de Israel, vivendo muitos séculos antes.", "Incorreto. Jacó foi neto de Abraão e pai dos líderes das tribos de Israel."] }
+        ];
+
+        let estadoJogo = 0;
+        let pontuacao = 0;
+        let perguntasAcertadas = [];
+        let perguntasTentadas = [];
+        let gincanaEmbaralhada = [];
+
+        const telaInicial = document.getElementById('tela-inicial');
+        const estacaoAtiva = document.getElementById('estacao-ativa');
+        const telaFinal = document.getElementById('tela-final');
+        const numeroQuizEl = document.getElementById('numero-quiz');
+        const textoPerguntaEl = document.getElementById('texto-pergunta');
+        const opcoesRespostasEl = document.getElementById('opcoes-respostas');
+        const justificativaBoxEl = document.getElementById('justificativa-box');
+        const caixaBotaoVoltarEl = document.getElementById('caixa-botao-voltar');
+        const caixaBotaoProximoEl = document.getElementById('caixa-botao-proximo');
+        
+        function embaralharArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function showChildScreen(tela) {
+            telaInicial.classList.remove('active');
+            estacaoAtiva.classList.remove('active');
+            telaFinal.classList.remove('active');
+            tela.classList.add('active');
+        }
+
+        function iniciarJogo() {
+            estadoJogo = 0;
+            pontuacao = 0;
+            perguntasAcertadas = [];
+            perguntasTentadas = [];
+            gincanaEmbaralhada = [...gincanaData];
+            embaralharArray(gincanaEmbaralhada);
+            carregarQuiz(estadoJogo);
+            showChildScreen(estacaoAtiva);
         }
         
-        function calculateStats(games) {
-            const stats = {};
-
-            const initializeTeamStats = (team) => {
-                if (!stats[team]) {
-                    stats[team] = { P: 0, J: 0, V: 0, E: 0, D: 0, GP: 0, GC: 0, SG: 0 };
-                }
-            };
-
-            games.forEach(game => {
-                const homeTeam = game.Mandante;
-                const awayTeam = game.Visitante;
-                const homeGoals = parseInt(game['Gols Mandante'], 10);
-                const awayGoals = parseInt(game['Gols Visitante'], 10);
-                const winner = game.Vencedor;
-                
-                if(!homeTeam || !awayTeam) return;
-
-                initializeTeamStats(homeTeam);
-                initializeTeamStats(awayTeam);
-                
-                // Update stats for both teams
-                stats[homeTeam].J++;
-                stats[awayTeam].J++;
-                stats[homeTeam].GP += homeGoals;
-                stats[awayTeam].GP += awayGoals;
-                stats[homeTeam].GC += awayGoals;
-                stats[awayTeam].GC += homeGoals;
-
-                if (winner === 'M') {
-                    stats[homeTeam].V++;
-                    stats[homeTeam].P += 3;
-                    stats[awayTeam].D++;
-                } else if (winner === 'V') {
-                    stats[awayTeam].V++;
-                    stats[awayTeam].P += 3;
-                    stats[homeTeam].D++;
-                } else if (winner === 'E') {
-                    stats[homeTeam].E++;
-                    stats[awayTeam].E++;
-                    stats[homeTeam].P += 1;
-                    stats[awayTeam].P += 1;
-                }
+        function carregarQuiz(indice) {
+            const dados = gincanaEmbaralhada[indice];
+            numeroQuizEl.textContent = `QUIZ ${indice + 1} de ${gincanaEmbaralhada.length}`;
+            textoPerguntaEl.textContent = dados.pergunta;
+            opcoesRespostasEl.innerHTML = '';
+            justificativaBoxEl.style.display = 'none';
+            caixaBotaoVoltarEl.innerHTML = '';
+            caixaBotaoProximoEl.innerHTML = '';
+            let indicesOpcoes = dados.opcoes.map((_, i) => i);
+            embaralharArray(indicesOpcoes);
+            indicesOpcoes.forEach(indiceOriginal => {
+                const botao = document.createElement('button');
+                botao.textContent = dados.opcoes[indiceOriginal];
+                botao.dataset.indiceOriginal = indiceOriginal;
+                botao.onclick = () => verificarResposta(indiceOriginal);
+                opcoesRespostasEl.appendChild(botao);
             });
-            
-            // Calculate goal difference and convert to array
-            const statsArray = Object.keys(stats).map(team => {
-                const teamStats = stats[team];
-                teamStats.SG = teamStats.GP - teamStats.GC;
-                return { team, ...teamStats };
-            });
-
-            // Sort by Points, Wins, Goal Difference, Goals For
-            statsArray.sort((a, b) => {
-                if (b.P !== a.P) return b.P - a.P;
-                if (b.V !== a.V) return b.V - a.V;
-                if (b.SG !== a.SG) return b.SG - a.SG;
-                if (b.GP !== a.GP) return b.GP - a.GP;
-                return a.team.localeCompare(b.team);
-            });
-
-            return statsArray;
         }
 
-        function displayResults(games, season, team) {
-            const resultsDiv = document.getElementById('results');
-            if (games.length === 0) {
-                resultsDiv.innerHTML = '<p style="text-align: center;">Nenhum jogo encontrado para os filtros selecionados.</p>';
-                return;
+        function verificarResposta(indiceEscolhido) {
+            const dados = gincanaEmbaralhada[estadoJogo];
+            const botaoEscolhido = opcoesRespostasEl.querySelector(`button[data-indice-original="${indiceEscolhido}"]`);
+            const isFirstAttempt = !perguntasTentadas.includes(estadoJogo);
+            if (isFirstAttempt) {
+                perguntasTentadas.push(estadoJogo);
             }
-
-            const stats = calculateStats(games);
-
-            let resultsHTML = `
-                <h2>Tabela de Classificação</h2>
-                <div style="overflow-x:auto;">
-                    <table id="stats-table">
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>P</th>
-                                <th>J</th>
-                                <th>V</th>
-                                <th>E</th>
-                                <th>D</th>
-                                <th>GP</th>
-                                <th>GC</th>
-                                <th>SG</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${stats.map(s => `
-                                <tr style="${s.team === team ? 'background-color: #c5cae9; font-weight: bold;' : ''}">
-                                    <td>${s.team}</td>
-                                    <td>${s.P}</td>
-                                    <td>${s.J}</td>
-                                    <td>${s.V}</td>
-                                    <td>${s.E}</td>
-                                    <td>${s.D}</td>
-                                    <td>${s.GP}</td>
-                                    <td>${s.GC}</td>
-                                    <td>${s.SG}</td>
-                                tr>`).join('')}
-                        </tbody>
-                    </table>
-                </div>
-
-                <h2>Jogos Filtrados (${games.length})</h2>
-                <div id="games-list">
-                    ${games.slice(0, 500).map(game => `
-                        <div class="game">
-                            <span class="game-date">${game.Data}</span>
-                            <span class="game-teams">
-                                <span style="${game.Mandante === team ? 'font-weight: bold;': ''}">${game.Mandante}</span>
-                                <strong>${game['Gols Mandante']} x ${game['Gols Visitante']}</strong>
-                                <span style="${game.Visitante === team ? 'font-weight: bold;': ''}">${game.Visitante}</span>
-                            </span>
-                        </div>
-                    `).join('')}
-                    ${games.length > 500 ? '<p style="text-align:center; font-style:italic;">Mostrando os primeiros 500 jogos de ' + games.length + '.</p>' : ''}
-                </div>
-            `;
-            
-            resultsDiv.innerHTML = resultsHTML;
+            justificativaBoxEl.textContent = dados.justificativas[indiceEscolhido];
+            justificativaBoxEl.style.display = 'block';
+            if (indiceEscolhido === dados.respostaCorreta) {
+                if (isFirstAttempt) {
+                    perguntasAcertadas.push(estadoJogo);
+                }
+                botaoEscolhido.classList.add('correta');
+                justificativaBoxEl.className = 'correct';
+                opcoesRespostasEl.querySelectorAll('button').forEach(b => b.disabled = true);
+                const botaoProximo = document.createElement('button');
+                botaoProximo.id = 'botao-proximo';
+                const isLastQuestion = estadoJogo >= gincanaEmbaralhada.length - 1;
+                if (isLastQuestion) {
+                    botaoProximo.textContent = 'Avaliação';
+                } else {
+                    botaoProximo.textContent = '→';
+                    botaoProximo.classList.add('arrow-btn');
+                }
+                botaoProximo.onclick = avancarQuiz;
+                caixaBotaoProximoEl.appendChild(botaoProximo);
+            } else {
+                botaoEscolhido.classList.add('incorreta');
+                justificativaBoxEl.className = 'wrong';
+                botaoEscolhido.disabled = true;
+            }
+        }
+        
+        function avancarQuiz() {
+            estadoJogo++;
+            if (estadoJogo < gincanaEmbaralhada.length) {
+                carregarQuiz(estadoJogo);
+            } else {
+                const totalPerguntas = gincanaEmbaralhada.length;
+                const acertos = perguntasAcertadas.length;
+                const porcentagem = (totalPerguntas > 0) ? Math.round((acertos / totalPerguntas) * 100) : 0;
+                document.getElementById('pontuacao-final').textContent = `${porcentagem}%`;
+                showChildScreen(telaFinal);
+            }
+        }
+        
+        function reiniciarJogo() {
+            showChildScreen(telaInicial);
         }
 
     </script>
+
 </body>
 </html>
